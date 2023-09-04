@@ -6,7 +6,7 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:28:02 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/04 17:08:10 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:21:25 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,10 @@ void ft_sleep(t_data *dnm)
 	if(dnm->sleep_status == 1)
 	{
 		printf("%d  %d is sleeping \n", dnm->ms,dnm->whc_philo);
-		pthread_mutex_lock(&lock);
 
 		dnm->ms += dnm->time_sleep;
 		*(dnm->adress_lf) = 0;
 		*(dnm->adress_rf) = 0;
-		pthread_mutex_unlock(&lock);
 		usleep(40);
 
 	}
@@ -102,21 +100,11 @@ void	*ft_dene(void *dnm)
 	return(0);
 
 }
-
-int	main(int ac, char **ag)
+void init(char **ag,t_data **dnm)
 {
-	int			i;
-	pthread_t *thread_id;
-	t_data *philo;
-
-	pthread_mutex_init(&lock, NULL);
-
-
-	philo = malloc(5*sizeof(t_data));
-	thread_id = malloc(5*sizeof(pthread_t));
 	int num = atoi(ag[1]);
-	i = 0;
-
+	int i = 0;
+	t_data *philo = (*dnm);
 	while (i<num)
 	{
 		if (i == 0)
@@ -144,6 +132,21 @@ int	main(int ac, char **ag)
 		i++;
 	}
 
+}
+
+int	main(int ac, char **ag)
+{
+	int			i;
+	pthread_t *thread_id;
+	t_data *philo;
+
+	pthread_mutex_init(&lock, NULL);
+	philo = malloc(5*sizeof(t_data));
+	thread_id = malloc(5*sizeof(pthread_t));
+	int num = atoi(ag[1]);
+
+	init(ag,&philo);
+
 	i = 0;
 	while (i < num)
 	{
@@ -156,6 +159,4 @@ int	main(int ac, char **ag)
         pthread_join(thread_id[i], NULL);
         i++;
     }
-
-	return (0);
 }
