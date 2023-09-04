@@ -6,7 +6,7 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:28:02 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/04 17:25:03 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/04 18:02:19 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,34 @@
 pthread_mutex_t lock;
 pthread_mutex_t lock2;
 
-void ft_sleep(t_data *dnm)
+int ft_sleep(t_data *dnm)
 {
+	pthread_mutex_lock(&lock);
+	if(dnm->ms_hungry >=dnm->time_die)
+		return(0);
 	if(dnm->sleep_status == 1)
 	{
 		printf("%d  %d is sleeping \n", dnm->ms,dnm->whc_philo);
 
 		dnm->ms += dnm->time_sleep;
 		dnm->ms_hungry +=dnm->time_sleep;
+		if(dnm->ms_hungry >=dnm->time_die)
+		return(0);
 		*(dnm->adress_lf) = 0;
 		*(dnm->adress_rf) = 0;
+		dnm->sleep_status = 0;
 		usleep(40);
 	}
+	pthread_mutex_unlock(&lock);
+	return(1);
 }
-void eat(t_data *dnm)
+int eat(t_data *dnm)
 {
 	pthread_mutex_lock(&lock);
 	if(dnm->right_fork == 0 && dnm->left_fork == 0)
 	{
+		if(dnm->ms_hungry >=dnm->time_die)
+			return(0);
 		dnm->right_fork = -1;
 		dnm->left_fork = -1;
 		*(dnm->adress_lf) = -1;
@@ -43,12 +53,16 @@ void eat(t_data *dnm)
 	}
 	else
 	{
+
 		dnm->ms_hungry += dnm->time_eat;
+		if(dnm->ms_hungry >=dnm->time_die)
+			return(0);
 		dnm->sleep_status = 0;
 		//printf("%d  %d is not eating %d  %d\n", dnm->ms,dnm->whc_philo,dnm->right_fork, dnm->left_fork);
 	}
 	dnm->ms += dnm->time_eat;
 	pthread_mutex_unlock(&lock);
+	return(1);
 }
 
 int ft_dead(t_data *dnm)
@@ -62,15 +76,24 @@ int ft_dead(t_data *dnm)
 
 void sender(t_data *dnm)
 {
-
-	//int a = ft_dead(dnm);
 	int i = 0;
 	while(i++ <= 5)
 	{
-
-		eat(dnm);
+		pthread_mutex_lock(&lock2);
+		if(eat(dnm) == 0)
+		{
+			printf("%d  %d is dead \n", dnm->ms,dnm->whc_philo);
+			exit(0);
+		}
+		pthread_mutex_unlock(&lock2);
 		usleep(20);
-		ft_sleep(dnm);
+		pthread_mutex_lock(&lock2);
+		if(ft_sleep(dnm)==0)
+		{
+			printf("%d  %d is dead \n", dnm->ms,dnm->whc_philo);
+			exit(0);
+		}
+		pthread_mutex_unlock(&lock2);
 		usleep(20);
 	}
 		//a = ft_dead(dnm);
