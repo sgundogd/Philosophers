@@ -6,7 +6,7 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:28:02 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/04 16:57:12 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:08:10 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,19 +114,20 @@ int	main(int ac, char **ag)
 
 	philo = malloc(5*sizeof(t_data));
 	thread_id = malloc(5*sizeof(pthread_t));
+	int num = atoi(ag[1]);
 	i = 0;
 
-	while (i<5)
+	while (i<num)
 	{
 		if (i == 0)
 		{
 			philo[0].adress_lf = &philo[1].right_fork;
-			philo[0].adress_rf = &philo[4].left_fork;
+			philo[0].adress_rf = &philo[num-1].left_fork;
 		}
-		else if(i == 4)
+		else if(i == num-1)
 		{
-		philo[4].adress_lf = &philo[0].right_fork;
-		philo[4].adress_rf = &philo[3].left_fork;
+		philo[num-1].adress_lf = &philo[0].right_fork;
+		philo[num-1].adress_rf = &philo[num-2].left_fork;
 
 		}
 		else
@@ -136,7 +137,7 @@ int	main(int ac, char **ag)
 		philo[i].adress_rf = &philo[i-1].left_fork;
 		}
 
-
+		philo[i].philo_num = atoi(ag[1]);
 		philo[i].time_die = atoi(ag[2]);
 		philo[i].time_eat = atoi(ag[3]);
 		philo[i].time_sleep = atoi(ag[4]);
@@ -144,14 +145,14 @@ int	main(int ac, char **ag)
 	}
 
 	i = 0;
-	while (i < 5)
+	while (i < num)
 	{
 		philo[i].whc_philo = i;
 		pthread_create(&thread_id[i], NULL, ft_dene, &philo[i]);
 		i++;
 	}
 	i = 0;
-	while (i < 5) {
+	while (i < num) {
         pthread_join(thread_id[i], NULL);
         i++;
     }
