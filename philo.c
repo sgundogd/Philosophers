@@ -6,13 +6,14 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:28:02 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/04 17:21:25 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:25:03 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
 pthread_mutex_t lock;
+pthread_mutex_t lock2;
 
 void ft_sleep(t_data *dnm)
 {
@@ -21,13 +22,11 @@ void ft_sleep(t_data *dnm)
 		printf("%d  %d is sleeping \n", dnm->ms,dnm->whc_philo);
 
 		dnm->ms += dnm->time_sleep;
+		dnm->ms_hungry +=dnm->time_sleep;
 		*(dnm->adress_lf) = 0;
 		*(dnm->adress_rf) = 0;
 		usleep(40);
-
 	}
-
-
 }
 void eat(t_data *dnm)
 {
@@ -40,18 +39,16 @@ void eat(t_data *dnm)
 		*(dnm->adress_rf) = -1;
 		dnm->sleep_status = 1;
 		printf("%d  %d is eating \n", dnm->ms,dnm->whc_philo);
+		dnm->ms_hungry = 0;
 	}
 	else
 	{
+		dnm->ms_hungry += dnm->time_eat;
 		dnm->sleep_status = 0;
 		//printf("%d  %d is not eating %d  %d\n", dnm->ms,dnm->whc_philo,dnm->right_fork, dnm->left_fork);
-
 	}
 	dnm->ms += dnm->time_eat;
 	pthread_mutex_unlock(&lock);
-
-	//ft_sleep(dnm);
-
 }
 
 int ft_dead(t_data *dnm)
@@ -76,7 +73,6 @@ void sender(t_data *dnm)
 		ft_sleep(dnm);
 		usleep(20);
 	}
-		//ft_sleep(dnm);
 		//a = ft_dead(dnm);
 	/*pthread_mutex_lock(&lock);
 	printf("öldü  %d\n",dnm->whc_philo);
@@ -141,6 +137,7 @@ int	main(int ac, char **ag)
 	t_data *philo;
 
 	pthread_mutex_init(&lock, NULL);
+	pthread_mutex_init(&lock2, NULL);
 	philo = malloc(5*sizeof(t_data));
 	thread_id = malloc(5*sizeof(pthread_t));
 	int num = atoi(ag[1]);
