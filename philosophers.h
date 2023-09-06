@@ -21,10 +21,9 @@ typedef struct s_data
 	int think_status;
 	int eat_status;
 	int sleep_status;
-	int left_fork;
-	int right_fork;
-	int *adress_lf;
-	int *adress_rf;
+	pthread_mutex_t *rf;
+	pthread_mutex_t *lf;
+
 
 
 } t_data;
