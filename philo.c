@@ -6,61 +6,63 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:28:02 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/06 20:20:27 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/07 02:08:47 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int ms = 0;
 
 int ft_sleep(t_data *dnm)
 {
+	unsigned long long t;
+	t = gettime();
 
 	if(dnm->ms_hungry >dnm->time_die)
 		return(0);
 	else
 	{
+		pthread_mutex_lock(dnm->write);
 
-		printf("%d  %d is sleeping \n", ms,dnm->whc_philo);
-		ms = ms+dnm->time_sleep;
-		dnm->ms += dnm->time_sleep;
-		dnm->ms_hungry +=dnm->time_sleep;
+		printf("%llu  %d is sleeping \n", gettime()-dnm->milsec,dnm->whc_philo);
+		pthread_mutex_unlock(dnm->write);
 		if(dnm->ms_hungry >dnm->time_die)
-		return(0);
-		dnm->sleep_status = 0;
+			return(0);
+
 		pthread_mutex_unlock(dnm->lf);
 		pthread_mutex_unlock(dnm->rf);
-		usleep(200);
-	}
 
+		ft_wait(dnm->time_sleep-gettime()+t);
+	}
 	return(1);
 }
 int eat(t_data *dnm)
 {
+
+	unsigned long long t;
 	pthread_mutex_lock(dnm->lf);
-	printf("%d  %d is take a fork \n", ms,dnm->whc_philo);
+	pthread_mutex_lock(dnm->write);
+	printf("%llu  %d is take a leftfork \n", gettime()-dnm->milsec,dnm->whc_philo);
+	pthread_mutex_unlock(dnm->write);
 	pthread_mutex_lock(dnm->rf);
+	t = gettime();
 		if(dnm->ms_hungry >dnm->time_die)
 			return(0);
-		printf("%d  %d is take a right fork \n", ms,dnm->whc_philo);
-		printf("%d  %d is eating \n", ms,dnm->whc_philo);
-		ms = ms+dnm->time_eat;
-		dnm->ms_hungry = 0;
-	dnm->ms += dnm->time_eat;
+			pthread_mutex_lock(dnm->write);
+		printf("%llu  %d is take a right fork \n",gettime()-dnm->milsec,dnm->whc_philo);
+		printf("%llu  %d is eating \n", gettime()-dnm->milsec,dnm->whc_philo);
+		pthread_mutex_unlock(dnm->write);
+
+		ft_wait(dnm->time_eat-gettime()+t);
+
+
 	return(1);
 }
 
 void	*ft_sender(void *philo)
 {
-			//a = ft_dead(dnm);
-	/*pthread_mutex_lock(&lock);
-	printf("öldü  %d\n",dnm->whc_philo);
-	exit(0);
-	pthread_mutex_unlock(&lock);*/
 	t_data *dnm = philo;
-	int i = 0;
-	while(i++ <= 5)
+	while(1)
 	{
 		if(eat(dnm) == 0)
 		{
@@ -73,13 +75,15 @@ void	*ft_sender(void *philo)
 			printf("%d  %d is dead \n", dnm->ms,dnm->whc_philo);
 			exit(0);
 		}
-		printf("%d  %d is thinking \n", ms,dnm->whc_philo);
+		pthread_mutex_lock(dnm->write);
+		printf("%llu  %d is thinking \n", gettime()-dnm->milsec,dnm->whc_philo);
+		pthread_mutex_unlock(dnm->write);
+
 	}
-	printf("%d\n",i);
 	return(0);
 
 }
-void init(char **ag,t_data **dnm,pthread_mutex_t **mutx)
+void init(char **ag,t_data **dnm,pthread_mutex_t **mutx, pthread_mutex_t *write)
 {
 	int num = atoi(ag[1]);
 	int i = 0;
@@ -100,6 +104,8 @@ void init(char **ag,t_data **dnm,pthread_mutex_t **mutx)
 		philo[i].time_die = atoi(ag[2]);
 		philo[i].time_eat = atoi(ag[3]);
 		philo[i].time_sleep = atoi(ag[4]);
+		philo[i].write = write;
+		philo[i].milsec = gettime();
 		i++;
 	}
 
@@ -111,6 +117,7 @@ int	main(int ac, char **ag)
 	pthread_t *thread_id;
 	t_data *philo;
 	pthread_mutex_t *mutx;
+	pthread_mutex_t write;
 	int num = atoi(ag[1]);
 
 	philo = malloc(num*sizeof(t_data));
@@ -118,7 +125,7 @@ int	main(int ac, char **ag)
 	mutx = malloc(num*sizeof(pthread_mutex_t));
 	i = 0;
 
-	init(ag,&philo,&mutx);
+	init(ag,&philo,&mutx, &write);
 	while (i<num)
 	{
 		pthread_mutex_init(&mutx[i],NULL);

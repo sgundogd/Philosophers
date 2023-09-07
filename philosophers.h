@@ -23,9 +23,17 @@ typedef struct s_data
 	int sleep_status;
 	pthread_mutex_t *rf;
 	pthread_mutex_t *lf;
+	pthread_mutex_t *write;
+	unsigned long long milsec;
 
 
 
 } t_data;
+
+unsigned long long gettime(void);
+void	*ft_sender(void *philo);
+int eat(t_data *dnm);
+int ft_sleep(t_data *dnm);
+void ft_wait(int second);
 
 #endif
