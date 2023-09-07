@@ -6,7 +6,7 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 12:17:17 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/07 14:10:51 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/07 14:23:14 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void thread_start(char **ag, pthread_t **thread_id, t_data **philo)
 		i+=2;
 
 	}
-	usleep(100);
+	usleep(200);
 	i = 1;
 	while (i < num)
 	{
