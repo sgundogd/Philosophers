@@ -6,7 +6,7 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:28:02 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/10 00:51:29 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/10 02:11:10 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,17 @@ int	main(int ac, char **ag)
 
 	if (ac == 5 || ac == 6)
 	{
-		philo = malloc(atoi(ag[1]) * sizeof(t_data));
-		thread_id = malloc(atoi(ag[1]) * sizeof(pthread_t));
-		mutx = malloc(atoi(ag[1]) * sizeof(pthread_mutex_t));
-		mutex_start(ag, &mutx, &write, &death);
-		init(ag, &philo, &mutx, &write, &death);
+		philo = malloc(ft_atoi(ag[1]) * sizeof(t_data));
+		thread_id = malloc(ft_atoi(ag[1]) * sizeof(pthread_t));
+		mutx = malloc(ft_atoi(ag[1]) * sizeof(pthread_mutex_t));
+		init(ag, &philo);
+		mutex_start(&philo, &mutx, &write, &death);
 		thread_start(ag, &thread_id, &philo);
 		ft_control(&philo, ag, &thread_id);
+		free(mutx);
+		free(thread_id);
+		free(philo);
 	}
+	else
+		return (1);
 }

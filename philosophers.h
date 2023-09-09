@@ -6,7 +6,7 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/09 22:25:41 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/10 00:17:49 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/10 02:09:42 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,8 @@ void				*ft_sender(void *philo);
 void				eat(t_data *dnm);
 void				ft_sleep(t_data *dnm);
 void				ft_wait(int second);
-void				init(char **ag,t_data **dnm, pthread_mutex_t **mutx,
-						pthread_mutex_t *write, pthread_mutex_t *death);
-void				mutex_start(char **ag, pthread_mutex_t **mutx,
+void				init(char **ag, t_data **philo);
+void				mutex_start(t_data **philo, pthread_mutex_t **mutx,
 						pthread_mutex_t *write, pthread_mutex_t *death);
 void				thread_start(char **ag, pthread_t **thread_id,
 						t_data **philo);
@@ -52,5 +51,7 @@ void				ft_control(t_data **philo, char **ag,
 int					eat_control(t_data *philo);
 void				ft_detach(char **ag, pthread_t **thread_id);
 void				ft_write(t_data *philo, char *status);
+int					dead_control(t_data *philo);
+int					ft_atoi(const char *str);
 
 #endif
