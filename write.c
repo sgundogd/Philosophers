@@ -1,32 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   time.c                                             :+:      :+:    :+:   */
+/*   write.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/06 23:26:51 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/09 22:28:45 by sgundogd         ###   ########.fr       */
+/*   Created: 2023/09/09 22:32:22 by sgundogd          #+#    #+#             */
+/*   Updated: 2023/09/09 22:50:19 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-unsigned long long	gettime(void)
-{
-	struct timeval		tv;
-	unsigned long long	t;
-
-	gettimeofday(&tv, NULL);
-	t = tv.tv_usec / 1000 + tv.tv_sec * 1000;
-	return (t);
-}
-
-void	ft_wait(int second)
+void	ft_write(t_data *philo, char *status)
 {
 	unsigned long long	t;
 
-	t = gettime();
-	while (gettime() - t < second)
-		usleep(100);
+	pthread_mutex_lock(philo->write);
+	t = gettime() - philo->milsec;
+	printf("%llu %d philo is %s \n", t, philo->whc_philo + 1, status);
+	pthread_mutex_unlock(philo->write);
 }

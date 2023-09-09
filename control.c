@@ -6,37 +6,51 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 13:32:29 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/07 14:09:28 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/10 00:49:38 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void ft_control(t_data **philo)
+void	ft_control(t_data **philo, char **ag, pthread_t **thread_id)
 {
-	t_data *dnm = (*philo);
-	int i = 0;
+	int	i;
 
 	while (1)
 	{
 		i = 0;
-		while (i < dnm[0].philo_num)
+		while (i < (*philo)[0].philo_num)
 		{
-			pthread_mutex_lock(dnm[i].death);
-			pthread_mutex_lock(dnm[i].write);
-			if(gettime()-dnm[i].last_eat > dnm[i].time_die)
+			pthread_mutex_lock((*philo)[i].death);
+			pthread_mutex_lock((*philo)[i].write);
+			if ((gettime() - (*philo)[i].last_eat) >
+				(*philo)[i].time_die || eat_control((*philo)))
 			{
-				printf("%llu  %d is dead\n", gettime()-dnm[i].milsec,dnm[i].whc_philo);
-				pthread_mutex_unlock(dnm->death);
+				if ((gettime() - (*philo)[i].last_eat) > (*philo)[i].time_die)
+					printf("%llu  %d is dead\n", gettime() - (*philo)[i].milsec,
+						(*philo)[i].whc_philo);
+				pthread_mutex_unlock((*philo)->death);
+				ft_detach(ag, &thread_id);
 				return ;
 			}
 			else
-				pthread_mutex_unlock(dnm[i].write);
-			pthread_mutex_unlock(dnm->death);
+				pthread_mutex_unlock((*philo)[i].write);
+			pthread_mutex_unlock((*philo)->death);
 			i++;
-
 		}
 	}
+}
 
+int	eat_control(t_data *philo)
+{
+	int	i;
 
+	i = 0;
+	while (i < philo[0].philo_num)
+	{
+		if (philo[i].num_eat < philo[i].num_eat_max)
+			return (0);
+		i++;
+	}
+	return (1);
 }
