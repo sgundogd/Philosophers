@@ -6,17 +6,19 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 12:17:17 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/10 02:08:53 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/10 10:59:58 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	init(char **ag, t_data **philo)
+int	init(char **ag, t_data **philo)
 {
 	int	i;
 
 	i = 0;
+	if (ft_atoi(ag[1]) == 0)
+		return (-1);
 	while (i < ft_atoi(ag[1]))
 	{
 		(*philo)[i].philo_num = ft_atoi(ag[1]);
@@ -30,8 +32,11 @@ void	init(char **ag, t_data **philo)
 		(*philo)[i].num_eat = 0;
 		(*philo)[i].milsec = gettime();
 		(*philo)[i].last_eat = gettime();
+		(*philo)[i].death_status_ad = &(*philo)[0].death_status;
+		(*philo)[0].death_status = 0;
 		i++;
 	}
+	return (0);
 }
 
 void	mutex_start(t_data **philo, pthread_mutex_t **mutx,

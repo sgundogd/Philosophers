@@ -6,7 +6,7 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/09 22:25:41 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/10 02:09:42 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/10 10:53:01 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ typedef struct s_data
 	int					num_eat;
 	int					num_eat_max;
 	int					whc_philo;
+	int					death_status;
+	int					*death_status_ad;
 	pthread_mutex_t		*rf;
 	pthread_mutex_t		*lf;
 	pthread_mutex_t		*write;
@@ -41,7 +43,7 @@ void				*ft_sender(void *philo);
 void				eat(t_data *dnm);
 void				ft_sleep(t_data *dnm);
 void				ft_wait(int second);
-void				init(char **ag, t_data **philo);
+int					init(char **ag, t_data **philo);
 void				mutex_start(t_data **philo, pthread_mutex_t **mutx,
 						pthread_mutex_t *write, pthread_mutex_t *death);
 void				thread_start(char **ag, pthread_t **thread_id,
