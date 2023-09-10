@@ -6,13 +6,13 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 13:32:29 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/10 11:02:57 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/10 11:18:49 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	ft_control(t_data **philo, char **ag, pthread_t **thread_id)
+void	ft_control(t_data **philo)
 {
 	int	i;
 
@@ -62,7 +62,7 @@ int	dead_control(t_data *philo)
 	i = 0;
 	while (i < philo[0].philo_num)
 	{
-		if ((gettime() - philo[i].last_eat) >= philo[i].time_die)
+		if ((int)(gettime() - philo[i].last_eat) >= philo[i].time_die)
 			return (i);
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 15:28:02 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/10 11:12:07 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/10 11:18:34 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	main(int ac, char **ag)
 			return (0);
 		mutex_start(&philo, &mutx, &write, &death);
 		thread_start(ag, &thread_id, &philo);
-		ft_control(&philo, ag, &thread_id);
+		ft_control(&philo);
 		ft_detach(ag, &thread_id);
 		free(mutx);
 		free(thread_id);

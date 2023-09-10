@@ -6,7 +6,7 @@
 /*   By: sgundogd <sgundogd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/06 23:26:51 by sgundogd          #+#    #+#             */
-/*   Updated: 2023/09/09 22:28:45 by sgundogd         ###   ########.fr       */
+/*   Updated: 2023/09/10 11:19:56 by sgundogd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,6 @@ void	ft_wait(int second)
 	unsigned long long	t;
 
 	t = gettime();
-	while (gettime() - t < second)
+	while ((int)(gettime() - t) < second)
 		usleep(100);
 }
